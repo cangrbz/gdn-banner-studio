@@ -1,23 +1,26 @@
-/** Görsel yüklenmemiş ürünler için basit yer tutucu laptop çizimi (SVG). */
+/** Görsel yüklenmemiş ürünler için basit yer tutucu oyun laptopu çizimi (SVG). */
 export function placeholderLaptopSvg(hue: number): string {
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 260">
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280">
 <defs>
 <linearGradient id="s" x1="0" y1="0" x2="1" y2="1">
-<stop offset="0" stop-color="hsl(${hue},70%,62%)"/><stop offset="1" stop-color="hsl(${(hue + 50) % 360},70%,38%)"/>
+<stop offset="0" stop-color="#f4f6f8"/><stop offset="1" stop-color="#cfd5dc"/>
 </linearGradient>
 <linearGradient id="b" x1="0" y1="0" x2="0" y2="1">
-<stop offset="0" stop-color="#d9dde3"/><stop offset="1" stop-color="#9aa1ab"/>
+<stop offset="0" stop-color="#2a2d33"/><stop offset="1" stop-color="#0d0e10"/>
 </linearGradient>
 </defs>
-<rect x="62" y="8" width="276" height="196" rx="10" fill="#22262d"/>
-<rect x="72" y="18" width="256" height="170" rx="3" fill="url(#s)"/>
-<path d="M72 150 L160 90 L230 140 L328 70 L328 188 L72 188Z" fill="rgba(255,255,255,.12)"/>
-<path d="M18 206 H382 L366 236 Q362 244 350 244 H50 Q38 244 34 236Z" fill="url(#b)"/>
-<rect x="170" y="206" width="60" height="7" rx="3" fill="#7d848e"/>
+<rect x="52" y="6" width="296" height="200" rx="8" fill="#16181c"/>
+<rect x="62" y="16" width="276" height="174" rx="2" fill="url(#s)"/>
+<rect x="88" y="62" width="150" height="20" rx="2" fill="#2a2d33"/>
+<rect x="88" y="92" width="110" height="26" rx="2" fill="hsl(${hue},75%,42%)"/>
+<rect x="76" y="160" width="34" height="20" fill="#1b1d21"/>
+<path d="M14 208 H386 L372 246 Q368 256 354 256 H46 Q32 256 28 246Z" fill="url(#b)"/>
+<path d="M70 216 H330 L322 236 H78Z" fill="hsl(${hue},90%,45%)" opacity=".55"/>
+<rect x="170" y="240" width="60" height="8" rx="3" fill="#3a3e45"/>
 </svg>`
 }
 
 export const svgToDataUrl = (svg: string) =>
   'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg)
 
-export const PLACEHOLDER_HUES = [210, 280, 20]
+export const PLACEHOLDER_HUES = [110, 130, 95]

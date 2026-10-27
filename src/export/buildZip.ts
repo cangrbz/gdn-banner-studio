@@ -39,7 +39,7 @@ export function productSrc(c: Campaign, i: number): string {
 
 export async function buildSizeZip(c: Campaign, size: BannerSize, startLevel = 1): Promise<SizeResult> {
   const n = c.products.length
-  const imgBox = maxImageBox(size, n)
+  const imgBox = maxImageBox(c, size)
   // Görselleri bir kere yükle
   const productImgs = await Promise.all(c.products.map((_, i) => loadImage(productSrc(c, i))))
   const bgImg = c.background ? await loadImage(c.background) : null
@@ -74,7 +74,7 @@ export async function buildSizeZip(c: Campaign, size: BannerSize, startLevel = 1
         zip.file('logo.svg', dataUrlToBytes(c.logo))
       } else if (logoImg) {
         names.logo = 'logo.png'
-        zip.file('logo.png', fitPng(logoImg, size.frame.logo.w * L.scale, size.frame.logo.h * L.scale, L.colors))
+        zip.file('logo.png', fitPng(logoImg, size.logo.w * L.scale, size.logo.h * L.scale, L.colors))
       }
     }
 

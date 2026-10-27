@@ -7,7 +7,6 @@ export const emptyProduct = (): Product => ({
   id: uid(),
   image: null,
   name: '',
-  model: '',
   price: '',
   features: [],
 })
@@ -16,50 +15,58 @@ export const emptyProduct = (): Product => ({
 export const exampleCampaign = (): Campaign => ({
   campaignName: 'Örnek Laptop Kampanyası',
   clickUrl: 'https://www.example.com/laptop',
-  ctaText: 'Hemen İncele',
+  headline: 'Heyecan veren\nperformans',
+  subline: 'Oyun laptoplarını keşfet.',
+  ctaText: 'Hemen keşfet',
   background: null,
   logo: null,
   colors: {
-    bg: '#0f1d3a',
-    bg2: '#1f3f7a',
+    bg: '#000000',
+    bg2: '#0f4d12',
     text: '#ffffff',
-    accent: '#ffb020',
-    ctaText: '#14213d',
+    priceBg: '#39ff14',
+    priceText: '#000000',
+    badgeBg: '#8a2be2',
+    badgeText: '#ffffff',
+    ctaBg: '#000000',
+    ctaText: '#ffffff',
   },
   products: [
     {
       id: uid(),
       image: null,
-      name: 'Zenith Book 14',
-      model: 'Core Ultra 7 · 16 GB · 1 TB SSD',
-      price: '42.999 TL',
-      features: ['2.8K OLED ekran', '18 saate kadar pil', '1,2 kg'],
+      name: 'Zenith G6 V3.5',
+      price: '54.999 TL',
+      features: ['RTX 5060', '165 Hz ekran', '16 GB RAM'],
     },
     {
       id: uid(),
       image: null,
-      name: 'Nova Pro 16',
-      model: 'Ryzen 9 · 32 GB · RTX 4070',
-      price: '64.499 TL',
-      features: ['165 Hz ekran', 'Gelişmiş soğutma'],
+      name: 'Zenith G6 V3.9',
+      price: '69.999 TL',
+      features: ['RTX 5070', '240 Hz ekran', '32 GB RAM'],
     },
     {
       id: uid(),
       image: null,
-      name: 'Aero 13',
-      model: 'Core i5 · 8 GB · 512 GB SSD',
-      price: '24.999 TL',
-      features: [],
+      name: 'Zenith S8 V1.2',
+      price: '149.999 TL',
+      features: ['RTX 5090', 'Mini LED ekran', '64 GB RAM'],
     },
   ],
+  sizeSettings: {},
 })
 
-const KEY = 'gdn-banner-studio:v1'
+const KEY = 'gdn-banner-studio:v2'
 
 export function loadCampaign(): Campaign | null {
   try {
     const raw = localStorage.getItem(KEY)
-    return raw ? (JSON.parse(raw) as Campaign) : null
+    if (!raw) return null
+    const c = JSON.parse(raw) as Campaign
+    // Eksik alanları örnekten tamamla (eski kayıtlar için)
+    const ex = exampleCampaign()
+    return { ...ex, ...c, colors: { ...ex.colors, ...c.colors }, sizeSettings: c.sizeSettings ?? {} }
   } catch {
     return null
   }

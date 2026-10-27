@@ -1,4 +1,4 @@
-import type { BannerSize } from '../types'
+import type { BannerSize, SizeSettings } from '../types'
 import type { SizeResult } from '../export/buildZip'
 import { GDN_LIMITS, kb } from '../export/buildZip'
 
@@ -9,19 +9,40 @@ interface Props {
   result?: SizeResult
   onDownload: () => void
   busy: boolean
+  settings: SizeSettings
+  onSettings: (patch: Partial<SizeSettings>) => void
+  onResetSettings: () => void
 }
 
 const MAX_W = 470
 const MAX_H = 600
+const STEP = 2
 
-export function PreviewCard({ size, html, replayKey, result, onDownload, busy }: Props) {
+function Stepper({ label, value, onChange, hint }: { label: string; value: number; onChange: (v: number) => void; hint: string }) {
+  return (
+    <div className="stepper" title={hint}>
+      <span className="stepper-label">{label}</span>
+      <button type="button" className="icon-btn" aria-label={`${label} azalt`} onClick={() => onChange(value - STEP)}>−</button>
+      <span className="stepper-value num">{value > 0 ? `+${value}` : value}</span>
+      <button type="button" className="icon-btn" aria-label={`${label} artır`} onClick={() => onChange(value + STEP)}>+</button>
+    </div>
+  )
+}
+
+export function PreviewCard({ size, html, replayKey, result, onDownload, busy, settings, onSettings, onResetSettings }: Props) {
   const scale = Math.min(1, MAX_W / size.width, MAX_H / size.height)
   const w = Math.round(size.width * scale)
   const h = Math.round(size.height * scale)
   const pct = result ? Math.min(100, (result.bytes / GDN_LIMITS.maxZipBytes) * 100) : 0
+  const d = size.defaults
+  const changed =
+    settings.gap !== d.gap ||
+    settings.tagOffset !== d.tagOffset ||
+    settings.showTags !== d.showTags ||
+    settings.showFeatures !== d.showFeatures
 
   return (
-    <figure className="preview" style={{ width: Math.max(w, 230) }}>
+    <figure className="preview" style={{ width: Math.max(w, 260) }}>
       <figcaption className="preview-head">
         <span className="preview-size num">
           {size.width}<span className="x">×</span>{size.height}
@@ -40,6 +61,32 @@ export function PreviewCard({ size, html, replayKey, result, onDownload, busy }:
           height={size.height}
           style={{ transform: `scale(${scale})` }}
         />
+      </div>
+
+      <div className="preview-settings">
+        <Stepper
+          label="Aralık"
+          value={settings.gap}
+          onChange={(v) => onSettings({ gap: v })}
+          hint="Laptoplar arasındaki boşluk (px). Eksi değer laptopları üst üste bindirir."
+        />
+        <Stepper
+          label="Etiket"
+          value={settings.tagOffset}
+          onChange={(v) => onSettings({ tagOffset: v })}
+          hint="Fiyat etiketinin dikey konumu (px). Artı değer etiketi laptopun üzerine indirir."
+        />
+        <label className="check">
+          <input type="checkbox" checked={settings.showTags} onChange={(e) => onSettings({ showTags: e.target.checked })} />
+          Fiyat etiketi
+        </label>
+        <label className="check">
+          <input type="checkbox" checked={settings.showFeatures} onChange={(e) => onSettings({ showFeatures: e.target.checked })} />
+          Özellikler
+        </label>
+        {changed && (
+          <button type="button" className="btn-link" onClick={onResetSettings}>Sıfırla</button>
+        )}
       </div>
 
       <div className="preview-foot">

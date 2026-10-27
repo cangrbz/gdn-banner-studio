@@ -40,17 +40,13 @@ export function ProductCard({ index, product: p, canRemove, canMoveUp, canMoveDo
 
       <div className="grid2">
         <div className="field">
-          <label className="field-label" htmlFor={fid('name')}>Ürün adı</label>
-          <input id={fid('name')} value={p.name} onChange={(e) => set('name', e.target.value)} placeholder="ör. Zenith Book 14" />
+          <label className="field-label" htmlFor={fid('name')}>Model adı (rozet)</label>
+          <input id={fid('name')} value={p.name} onChange={(e) => set('name', e.target.value)} placeholder="ör. Zenith G6 V3.5" />
         </div>
         <div className="field">
           <label className="field-label" htmlFor={fid('price')}>Fiyat</label>
-          <input id={fid('price')} value={p.price} onChange={(e) => set('price', e.target.value)} placeholder="42.999 TL" className="num" />
+          <input id={fid('price')} value={p.price} onChange={(e) => set('price', e.target.value)} placeholder="54.999 TL" className="num" />
         </div>
-      </div>
-      <div className="field">
-        <label className="field-label" htmlFor={fid('model')}>Model / donanım</label>
-        <input id={fid('model')} value={p.model} onChange={(e) => set('model', e.target.value)} placeholder="Core Ultra 7 · 16 GB · 1 TB SSD" />
       </div>
 
       <div className="field">
@@ -65,7 +61,7 @@ export function ProductCard({ index, product: p, canRemove, canMoveUp, canMoveDo
                 aria-label={`Özellik ${k + 1}`}
                 value={f}
                 onChange={(e) => set('features', p.features.map((x, j) => (j === k ? e.target.value : x)))}
-                placeholder="ör. 18 saate kadar pil"
+                placeholder="ör. 165 Hz ekran"
               />
               <button
                 type="button"
@@ -83,6 +79,7 @@ export function ProductCard({ index, product: p, canRemove, canMoveUp, canMoveDo
             </button>
           )}
         </div>
+        <span className="field-hint">Hangi boyutlarda gösterileceğini önizleme kartlarından seçersin.</span>
       </div>
     </article>
   )

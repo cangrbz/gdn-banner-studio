@@ -137,11 +137,12 @@ button:disabled { opacity: .45; cursor: default; }
 .field-label { font-size: 12.5px; font-weight: 600; }
 .field-hint { font-size: 11.5px; color: var(--muted); margin: 0; }
 .field-count { color: var(--muted); font-weight: 500; font-family: var(--font-mono); font-size: 11px; margin-left: 4px; }
-input:not([type='color']):not([type='file']) {
+input:not([type='color']):not([type='file']):not([type='checkbox']), textarea {
   width: 100%; min-width: 0; padding: 8px 10px; background: var(--field);
   border: 1px solid var(--line); border-radius: 6px; outline: none;
 }
-input:not([type='color']):focus { border-color: var(--accent); background: var(--panel); }
+input:not([type='color']):focus, textarea:focus { border-color: var(--accent); background: var(--panel); }
+textarea { font: inherit; color: inherit; resize: vertical; min-height: 58px; line-height: 1.35; }
 .grid2 { display: grid; grid-template-columns: 1.4fr 1fr; gap: 10px; }
 
 /* görsel alanı */
@@ -156,7 +157,7 @@ input:not([type='color']):focus { border-color: var(--accent); background: var(-
 .imgfield-meta { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .imgfield-actions { display: flex; gap: 12px; margin-top: 2px; }
 
-.swatches { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(58px, 1fr)); gap: 6px; }
 .swatch { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; color: var(--muted); cursor: pointer; text-align: center; }
 .swatch input { width: 100%; height: 30px; padding: 0; border: 1px solid var(--line); border-radius: 6px; background: none; cursor: pointer; }
 
@@ -195,6 +196,16 @@ input:not([type='color']):focus { border-color: var(--accent); background: var(-
   background: var(--panel);
 }
 .preview-frame iframe { border: 0; display: block; transform-origin: 0 0; background: #fff; }
+.preview-settings {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; padding: 8px 10px;
+  background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); font-size: 12px;
+}
+.stepper { display: flex; align-items: center; gap: 4px; }
+.stepper-label { color: var(--muted); margin-right: 2px; }
+.stepper .icon-btn { width: 24px; height: 24px; }
+.stepper-value { min-width: 30px; text-align: center; font-size: 12px; }
+.check { display: flex; align-items: center; gap: 5px; cursor: pointer; }
+.check input { accent-color: var(--accent); margin: 0; }
 .preview-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 10px; min-height: 20px; }
 .budget { display: flex; align-items: center; gap: 8px; min-width: 0; }
 .budget-bar { width: 54px; height: 5px; border-radius: 3px; background: var(--line); overflow: hidden; flex: none; }

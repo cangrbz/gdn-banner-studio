@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
-import type { Campaign, Product } from './types'
+import type { Campaign, Product, SizeSettings } from './types'
 import { MAX_PRODUCTS } from './types'
 import { SIZES } from './banner/sizes'
-import { renderBanner } from './banner/renderBanner'
+import { BANNER_FONT, bannerFontLoaded, renderBanner } from './banner/renderBanner'
+import { settingsFor } from './banner/layout'
 import { buildAll, buildSizeZip, kb, slug, type SizeResult } from './export/buildZip'
 import { productSrc } from './export/buildZip'
 import { emptyProduct, exampleCampaign, loadCampaign, saveCampaign } from './state/defaults'
@@ -29,6 +30,14 @@ export default function App() {
 
   const debounced = useDebounced(c, 300)
 
+  // Banner fontu yüklenince başlıklar gerçek ölçüyle yeniden sığdırılır
+  const fontSpec = `${BANNER_FONT.weight} 16px '${BANNER_FONT.family}'`
+  const [fontReady, setFontReady] = useState(bannerFontLoaded)
+  useEffect(() => {
+    if (fontReady) return
+    document.fonts.load(fontSpec, 'AaĞğŞşİıÇçÖöÜü').then(() => setFontReady(true), () => {})
+  }, [fontReady, fontSpec])
+
   useEffect(() => saveCampaign(debounced), [debounced])
   // İçerik değişince eski ölçümler geçersiz
   useEffect(() => setResults({}), [debounced])
@@ -43,10 +52,17 @@ export default function App() {
       })
     }
     return out
-  }, [debounced])
+  }, [debounced, fontReady])
 
   const set = <K extends keyof Campaign>(k: K, v: Campaign[K]) => setC((prev) => ({ ...prev, [k]: v }))
   const setColor = (k: keyof Campaign['colors'], v: string) => setC((prev) => ({ ...prev, colors: { ...prev.colors, [k]: v } }))
+  const setSizeSettings = (id: string, patch: Partial<SizeSettings> | null) =>
+    setC((prev) => {
+      const next = { ...prev.sizeSettings }
+      if (patch) next[id] = { ...next[id], ...patch }
+      else delete next[id]
+      return { ...prev, sizeSettings: next }
+    })
   const setProducts = (fn: (ps: Product[]) => Product[]) => setC((prev) => ({ ...prev, products: fn(prev.products) }))
 
   const base = slug(c.campaignName) || 'gdn-set'
@@ -134,6 +150,20 @@ export default function App() {
               <label className="field-label" htmlFor="clickUrl">Tıklama adresi (clickTag)</label>
               <input id="clickUrl" type="url" value={c.clickUrl} onChange={(e) => set('clickUrl', e.target.value)} />
             </div>
+          </section>
+
+          <section className="section">
+            <h2 className="section-title">Metinler</h2>
+            <div className="field">
+              <label className="field-label" htmlFor="headline">Başlık</label>
+              <textarea id="headline" rows={2} value={c.headline} onChange={(e) => set('headline', e.target.value)} />
+              <span className="field-hint">Büyük harfe çevrilir. Satır sonu için Enter; kutuya sığmazsa yazı küçülür.</span>
+            </div>
+            <div className="field">
+              <label className="field-label" htmlFor="subline">Alt metin</label>
+              <input id="subline" value={c.subline} onChange={(e) => set('subline', e.target.value)} />
+              <span className="field-hint">Dar boyutlarda (320×50, 728×90, 970×250) gösterilmez.</span>
+            </div>
             <div className="field">
               <label className="field-label" htmlFor="ctaText">Buton metni</label>
               <input id="ctaText" value={c.ctaText} onChange={(e) => set('ctaText', e.target.value)} />
@@ -147,10 +177,14 @@ export default function App() {
             <div className="swatches">
               {(
                 [
-                  ['bg', 'Zemin 1'],
-                  ['bg2', 'Zemin 2'],
+                  ['bg', 'Zemin'],
+                  ['bg2', 'Parlama'],
                   ['text', 'Metin'],
-                  ['accent', 'Vurgu'],
+                  ['priceBg', 'Fiyat zemini'],
+                  ['priceText', 'Fiyat yazısı'],
+                  ['badgeBg', 'Rozet zemini'],
+                  ['badgeText', 'Rozet yazısı'],
+                  ['ctaBg', 'Buton zemini'],
                   ['ctaText', 'Buton yazısı'],
                 ] as const
               ).map(([k, label]) => (
@@ -160,7 +194,7 @@ export default function App() {
                 </label>
               ))}
             </div>
-            <p className="field-hint">Zemin renkleri sadece arka plan görseli yokken kullanılır.</p>
+            <p className="field-hint">Zemin ve parlama sadece arka plan görseli yokken kullanılır. Buton çerçevesi buton yazısı rengindedir.</p>
           </section>
 
           <section className="section">
@@ -211,9 +245,8 @@ export default function App() {
 
         <main className="stage">
           <div className="stage-note">
-            {c.products.length === 1
-              ? 'Tek ürün: banner bir kez oynar ve son karede durur.'
-              : `${c.products.length} ürün sırayla gösterilir, ardından hepsi bir arada kapanış karesi gelir. Döngü 30 saniyeyi geçmez.`}
+            Öğeler sırayla girer ve son karede kalır. Her banner'ın altındaki ayarlarla laptop aralığını,
+            fiyat etiketinin konumunu ve özelliklerin gösterilip gösterilmeyeceğini o boyuta özel değiştirebilirsin.
           </div>
           <div className="previews">
             {SIZES.map((s) => (
@@ -225,6 +258,9 @@ export default function App() {
                 result={results[s.id]}
                 busy={busy}
                 onDownload={() => exportOne(s.id)}
+                settings={settingsFor(c, s)}
+                onSettings={(patch) => setSizeSettings(s.id, patch)}
+                onResetSettings={() => setSizeSettings(s.id, null)}
               />
             ))}
           </div>
