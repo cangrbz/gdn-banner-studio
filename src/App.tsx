@@ -5,7 +5,8 @@ import { SIZES } from './banner/sizes'
 import { BANNER_FONT, bannerFontLoaded, renderBanner } from './banner/renderBanner'
 import { settingsFor } from './banner/layout'
 import { buildAll, buildSizeZip, kb, slug, type SizeResult } from './export/buildZip'
-import { productSrc } from './export/buildZip'
+import { logoSrc, productSrc } from './export/buildZip'
+import { LOGOS } from './banner/logos'
 import { emptyProduct, exampleCampaign, loadCampaign, saveCampaign } from './state/defaults'
 import { saveFile } from './lib/download'
 import { ImageField } from './components/ImageField'
@@ -47,7 +48,7 @@ export default function App() {
     for (const s of SIZES) {
       out[s.id] = renderBanner(debounced, s, (k) => {
         if (k === 'bg') return debounced.background
-        if (k === 'logo') return debounced.logo
+        if (k === 'logo' || k === 'logoIcon' || k === 'logoWord') return logoSrc(debounced, k)
         return productSrc(debounced, Number(k.slice(1)))
       })
     }
@@ -173,7 +174,32 @@ export default function App() {
           <section className="section">
             <h2 className="section-title">Görünüm</h2>
             <ImageField label="Arka plan" hint="Her boyuta ortalanıp kırpılır" value={c.background} onChange={(v) => set('background', v)} />
-            <ImageField label="Logo" hint="PNG veya SVG" value={c.logo} onChange={(v) => set('logo', v)} />
+            <div className="field">
+              <span className="field-label" id="logo-label">Logo</span>
+              <div className="logo-picker" role="radiogroup" aria-labelledby="logo-label">
+                {[...LOGOS, null].map((l) => {
+                  const id = l?.id ?? ''
+                  return (
+                    <button
+                      type="button"
+                      role="radio"
+                      aria-checked={c.logoId === id}
+                      key={id || 'none'}
+                      className={`logo-option${c.logoId === id ? ' selected' : ''}`}
+                      onClick={() => set('logoId', id)}
+                    >
+                      {l ? (
+                        <img src={'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(l.full)} alt="" />
+                      ) : (
+                        <span className="logo-none">Yok</span>
+                      )}
+                      <span className="logo-name">{l?.label ?? 'Logo yok'}</span>
+                    </button>
+                  )
+                })}
+              </div>
+              <span className="field-hint">Dar boyutlarda sadece ikon, dikey boyutlarda ikon ve yazı üst üste kullanılır.</span>
+            </div>
             <div className="swatches">
               {(
                 [

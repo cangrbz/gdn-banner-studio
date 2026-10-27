@@ -1,6 +1,7 @@
 import JSZip from 'jszip'
 import type { BannerSize, Campaign } from '../types'
-import { maxImageBox, renderBanner, type AssetKey } from '../banner/renderBanner'
+import { logoParts, maxImageBox, renderBanner, type AssetKey, type LogoPart } from '../banner/renderBanner'
+import { getLogo } from '../banner/logos'
 import { PLACEHOLDER_HUES, placeholderLaptopSvg } from '../banner/placeholder'
 import { coverJpeg, dataUrlToBytes, fitPng, isSvg, loadImage } from './images'
 
@@ -19,6 +20,15 @@ const LEVELS = [
   { scale: 1, colors: 128, jpeg: 0.6 },
   { scale: 1, colors: 64, jpeg: 0.5 },
 ]
+
+const LOGO_FILES: Record<LogoPart, string> = { logo: 'logo.svg', logoIcon: 'logo-icon.svg', logoWord: 'logo-word.svg' }
+const LOGO_SRC = { logo: 'full', logoIcon: 'icon', logoWord: 'word' } as const
+
+/** Önizlemede logo parçasının data URL'si */
+export function logoSrc(c: Campaign, key: LogoPart): string | null {
+  const logo = getLogo(c.logoId)
+  return logo ? 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(logo[LOGO_SRC[key]]) : null
+}
 
 export interface SizeResult {
   size: BannerSize
@@ -43,7 +53,6 @@ export async function buildSizeZip(c: Campaign, size: BannerSize, startLevel = 1
   // Görselleri bir kere yükle
   const productImgs = await Promise.all(c.products.map((_, i) => loadImage(productSrc(c, i))))
   const bgImg = c.background ? await loadImage(c.background) : null
-  const logoImg = c.logo && !isSvg(c.logo) ? await loadImage(c.logo) : null
 
   let last: SizeResult | null = null
   for (let lv = startLevel; lv < LEVELS.length; lv++) {
@@ -68,13 +77,12 @@ export async function buildSizeZip(c: Campaign, size: BannerSize, startLevel = 1
       zip.file('bg.jpg', await coverJpeg(bgImg, size.width * Math.min(L.scale, 1.5), size.height * Math.min(L.scale, 1.5), L.jpeg))
     }
     // Logo
-    if (c.logo) {
-      if (isSvg(c.logo)) {
-        names.logo = 'logo.svg'
-        zip.file('logo.svg', dataUrlToBytes(c.logo))
-      } else if (logoImg) {
-        names.logo = 'logo.png'
-        zip.file('logo.png', fitPng(logoImg, size.logo.w * L.scale, size.logo.h * L.scale, L.colors))
+    const logo = getLogo(c.logoId)
+    if (logo) {
+      for (const { key } of logoParts(c, size)) {
+        const file = LOGO_FILES[key]
+        names[key] = file
+        zip.file(file, logo[LOGO_SRC[key]])
       }
     }
 

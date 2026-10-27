@@ -46,7 +46,8 @@ export interface Campaign {
   ctaText: string
   /** Arka plan görseli (data URL). Boşsa renklerden degrade kullanılır. */
   background: string | null
-  logo: string | null
+  /** banner/logos.ts içindeki logo id'si; boş → logo yok */
+  logoId: string
   colors: Colors
   products: Product[]
   /** boyut id → ayar; olmayan alanlar boyutun varsayılanından gelir */
@@ -98,6 +99,8 @@ export interface BannerSize {
   height: number
   label: string
   logo: Rect
+  /** 'full' yatay tam logo, 'icon' sadece ikon, 'stacked' ikon üstte yazı altta */
+  logoMode: 'full' | 'icon' | 'stacked'
   headline: TextBox & { oneLine?: boolean }
   /** null → bu boyutta alt metin yok */
   sub: TextBox | null

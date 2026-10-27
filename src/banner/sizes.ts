@@ -17,7 +17,8 @@ export const SIZES: BannerSize[] = [
     width: 300,
     height: 250,
     label: 'Medium Rectangle',
-    logo: { x: 110, y: 4, w: 80, h: 26 },
+    logo: { x: 125, y: 3, w: 50, h: 28 },
+    logoMode: 'icon',
     headline: { x: 8, y: 33, w: 284, h: 22, font: 20, align: 'center', oneLine: true },
     sub: { x: 8, y: 56, w: 284, h: 14, font: 11, align: 'center' },
     products: {
@@ -39,7 +40,8 @@ export const SIZES: BannerSize[] = [
     width: 336,
     height: 280,
     label: 'Large Rectangle',
-    logo: { x: 123, y: 4, w: 90, h: 30 },
+    logo: { x: 141, y: 3, w: 54, h: 32 },
+    logoMode: 'icon',
     headline: { x: 8, y: 38, w: 320, h: 24, font: 22, align: 'center', oneLine: true },
     sub: { x: 8, y: 64, w: 320, h: 15, font: 12, align: 'center' },
     products: {
@@ -61,7 +63,8 @@ export const SIZES: BannerSize[] = [
     width: 160,
     height: 600,
     label: 'Wide Skyscraper',
-    logo: { x: 25, y: 8, w: 110, h: 62 },
+    logo: { x: 25, y: 8, w: 110, h: 64 },
+    logoMode: 'stacked',
     headline: { x: 6, y: 82, w: 148, h: 50, font: 21, align: 'center' },
     sub: { x: 8, y: 140, w: 144, h: 34, font: 12, align: 'center' },
     products: {
@@ -83,7 +86,8 @@ export const SIZES: BannerSize[] = [
     width: 300,
     height: 600,
     label: 'Half Page',
-    logo: { x: 95, y: 10, w: 110, h: 72 },
+    logo: { x: 95, y: 10, w: 110, h: 74 },
+    logoMode: 'stacked',
     headline: { x: 8, y: 102, w: 284, h: 72, font: 31, align: 'center' },
     sub: { x: 8, y: 184, w: 284, h: 16, font: 12.5, align: 'center' },
     products: {
@@ -105,7 +109,8 @@ export const SIZES: BannerSize[] = [
     width: 300,
     height: 1050,
     label: 'Portrait',
-    logo: { x: 85, y: 8, w: 130, h: 92 },
+    logo: { x: 85, y: 10, w: 130, h: 92 },
+    logoMode: 'stacked',
     headline: { x: 8, y: 110, w: 284, h: 90, font: 37, align: 'center' },
     sub: { x: 8, y: 210, w: 284, h: 20, font: 14, align: 'center' },
     products: {
@@ -128,6 +133,7 @@ export const SIZES: BannerSize[] = [
     height: 50,
     label: 'Mobile Banner',
     logo: { x: 3, y: 5, w: 30, h: 40 },
+    logoMode: 'icon',
     headline: { x: 37, y: 5, w: 94, h: 40, font: 13, align: 'left' },
     sub: null,
     products: {
@@ -149,11 +155,12 @@ export const SIZES: BannerSize[] = [
     width: 728,
     height: 90,
     label: 'Leaderboard',
-    logo: { x: 10, y: 10, w: 90, h: 70 },
-    headline: { x: 110, y: 12, w: 200, h: 66, font: 24, align: 'left' },
+    logo: { x: 12, y: 22, w: 160, h: 46 },
+    logoMode: 'full',
+    headline: { x: 184, y: 12, w: 160, h: 66, font: 24, align: 'left' },
     sub: null,
     products: {
-      area: { x: 318, y: 2, w: 280, h: 86 },
+      area: { x: 350, y: 2, w: 252, h: 86 },
       arrange: 'row',
       laptopW: 96,
       sideScale: 0.82,
@@ -171,7 +178,8 @@ export const SIZES: BannerSize[] = [
     width: 970,
     height: 250,
     label: 'Billboard',
-    logo: { x: 20, y: 20, w: 220, h: 64 },
+    logo: { x: 22, y: 22, w: 230, h: 60 },
+    logoMode: 'full',
     headline: { x: 26, y: 92, w: 390, h: 92, font: 44, align: 'left' },
     sub: null,
     products: {

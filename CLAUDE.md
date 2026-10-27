@@ -19,6 +19,7 @@ src/
   types.ts                 Kampanya verisi, boyut ayarları (SizeSettings), yerleşim tipleri
   banner/
     sizes.ts               8 boyutun yerleşim konfigürasyonu (piksel). Yerleşim değişiklikleri BURADA.
+    logos.ts               Seçilebilir logolar (tam / ikon / yazı parçaları), SVG'ler src/assets/logos/
     layout.ts              Ürün alanı hesabı: laptop, fiyat etiketi ve özellik konumları
     timeline.ts            Giriş animasyonlarının gecikmeleri ve @keyframes'leri
     renderBanner.ts        Kampanya + boyut → bağımsız GDN HTML (ad.size meta, clickTag)
@@ -61,6 +62,10 @@ Kurallar değişebilir; Google Ads yardım sayfasından güncelliğini doğrula.
 
 ## Konvansiyonlar
 - Yeni boyut eklemek: `sizes.ts`'e bir `BannerSize` ekle. Başka dosyaya dokunmak gerekmez.
+- Logo serbest yükleme değil, listeden seçilir. Yeni logo: `src/assets/logos/` altına
+  `<ad>.svg`, `<ad>-icon.svg`, `<ad>-word.svg` (ikon/yazı parçalarının viewBox'ı sadece o
+  parçayı kapsar, tekrar eden şekiller temizlenmiş) koy ve `logos.ts`'e ekle.
+  Boyutun `logoMode`'u: `full` (yatay), `icon` (dar boyutlar), `stacked` (dikey, ikon üstte yazı altta).
 - Yerleşim değerleri piksel; koordinatlar banner'ın sol üst köşesinden.
 - Kullanıcıya görünen tüm metinler Türkçe.
 - Banner HTML'ine harici kütüphane ekleme (dosya boyutu ve GDN uyumluluğu).

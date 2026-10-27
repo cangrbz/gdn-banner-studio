@@ -19,7 +19,7 @@ export const exampleCampaign = (): Campaign => ({
   subline: 'Oyun laptoplarını keşfet.',
   ctaText: 'Hemen keşfet',
   background: null,
-  logo: null,
+  logoId: 'tulpar',
   colors: {
     bg: '#000000',
     bg2: '#0f4d12',
@@ -81,7 +81,6 @@ export function saveCampaign(c: Campaign) {
       const lite: Campaign = {
         ...c,
         background: null,
-        logo: null,
         products: c.products.map((p) => ({ ...p, image: null })),
       }
       localStorage.setItem(KEY, JSON.stringify(lite))

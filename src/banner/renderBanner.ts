@@ -1,5 +1,6 @@
 import type { BannerSize, Campaign, Rect } from '../types'
 import { layoutProducts, settingsFor } from './layout'
+import { getLogo, svgAspect } from './logos'
 import { KEYFRAMES, TIMING, enter } from './timeline'
 
 /**
@@ -9,7 +10,8 @@ import { KEYFRAMES, TIMING, enter } from './timeline'
  *  - önizlemede data URL,
  *  - export'ta ZIP içindeki dosya adı ("p0.png" gibi).
  */
-export type AssetKey = 'bg' | 'logo' | `p${number}`
+export type AssetKey = 'bg' | LogoPart | `p${number}`
+export type LogoPart = 'logo' | 'logoIcon' | 'logoWord'
 
 /**
  * Banner fontu. GDN, ZIP içinde font dosyasına izin vermez; tek izinli dış
@@ -38,11 +40,12 @@ export function renderBanner(c: Campaign, size: BannerSize, resolve: Resolve): s
   body.push(`<div class="bg"${bg ? ` style="background-image:url('${bg}')"` : ''}></div>`)
 
   // Logo
-  const logo = resolve('logo')
-  if (logo) {
-    const pos = size.headline.align === 'left' ? 'left center' : 'center'
+  const pos = size.headline.align === 'left' ? 'left center' : 'center'
+  for (const part of logoParts(c, size)) {
+    const src = resolve(part.key)
+    if (!src) continue
     body.push(
-      `<img class="el logo" src="${logo}" alt="" style="${box(size.logo)}object-position:${pos};${enter('down', TIMING.logo)}">`,
+      `<img class="el logo" src="${src}" alt="" style="${box(part.rect)}object-position:${pos};${enter('down', TIMING.logo)}">`,
     )
   }
 
@@ -170,6 +173,22 @@ ${body.join('\n')}
 }
 
 // ---------- yardımcılar ----------
+
+/** Seçili logonun bu boyutta kullanılan parçaları ve kutuları */
+export function logoParts(c: Campaign, size: BannerSize): { key: LogoPart; rect: Rect }[] {
+  const logo = getLogo(c.logoId)
+  if (!logo) return []
+  const L = size.logo
+  if (size.logoMode === 'icon') return [{ key: 'logoIcon', rect: L }]
+  if (size.logoMode === 'full') return [{ key: 'logo', rect: L }]
+  // stacked: yazı tam genişlikte altta, ikon kalan yükseklikte üstte
+  const gap = Math.round(L.h * 0.05)
+  const wordH = Math.min(L.w / svgAspect(logo.word), L.h * 0.4)
+  return [
+    { key: 'logoIcon', rect: { x: L.x, y: L.y, w: L.w, h: L.h - wordH - gap } },
+    { key: 'logoWord', rect: { x: L.x, y: L.y + L.h - wordH, w: L.w, h: wordH } },
+  ]
+}
 
 const r = (v: number) => Math.round(v * 10) / 10
 const box = (b: Rect) => `left:${r(b.x)}px;top:${r(b.y)}px;width:${r(b.w)}px;height:${r(b.h)}px;`
