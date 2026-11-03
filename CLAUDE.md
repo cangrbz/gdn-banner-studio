@@ -11,6 +11,12 @@ boyut için GDN'e yüklenebilir ayrı bir ZIP üretir. Arayüz dili Türkçedir.
 - `npm run dev` — geliştirme sunucusu (http://localhost:5173)
 - `npm run build` — tip kontrolü + üretim çıktısı (`dist/`)
 - `npm run build:single` — tüm uygulama tek HTML dosyasında (`dist-single/index.html`), paylaşmak için
+- `npm run preview` — derlenmiş çıktıyı Pages'teki yoluyla sunar: http://localhost:4173/gdn-banner-studio/
+
+## Yayın
+`main`'e her push'ta `.github/workflows/deploy.yml` uygulamayı derleyip GitHub Pages'e
+yayınlar: https://cangrbz.github.io/gdn-banner-studio/ — Pages alt klasörde çalıştığı için
+`vite.config.ts`'te derleme/preview `base`'i `/gdn-banner-studio/` (depo adı değişirse güncelle).
 
 ## Mimari
 
