@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react'
 import type { BannerSize, SizeSettings } from '../types'
 import type { SizeResult } from '../export/buildZip'
 import { GDN_LIMITS, kb } from '../export/buildZip'
@@ -51,16 +52,14 @@ export function PreviewCard({ size, html, replayKey, result, onDownload, busy, s
         {scale < 1 && <span className="preview-scale num">%{Math.round(scale * 100)}</span>}
       </figcaption>
 
-      <div className="preview-frame" style={{ width: w, height: h }}>
-        <iframe
-          key={replayKey}
-          title={`${size.id} önizleme`}
-          srcDoc={html}
-          sandbox="allow-scripts"
-          width={size.width}
-          height={size.height}
-          style={{ transform: `scale(${scale})` }}
-        />
+      {/* Ölçüler width/height özelliği ya da düz style yerine CSS değişkeniyle verilir:
+          reklam engelleyiciler 160×600, 728×90 gibi standart reklam ölçülerindeki
+          iframe'leri bu özelliklerden tanıyıp gizliyor. */}
+      <div
+        className="preview-frame"
+        style={{ '--fw': `${w}px`, '--fh': `${h}px`, '--bw': `${size.width}px`, '--bh': `${size.height}px`, '--s': scale } as CSSProperties}
+      >
+        <iframe key={replayKey} title="Banner önizleme" srcDoc={html} sandbox="allow-scripts" />
       </div>
 
       <div className="preview-settings">
